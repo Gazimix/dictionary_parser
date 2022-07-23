@@ -1,5 +1,5 @@
 import sys
-import os
+import platform
 import zipfile
 import re
 
@@ -8,8 +8,17 @@ UNDERLINE = "_______________________________________________________________"
 # DICTIONARIES_TO_SEARCH = ['Irrigation.docx',
 #                           'Test.docx'] \
 
-PATH_TO_DICTIONARIES = "D:\\Google Drive\\Documents\\Linguistics\\"
-DICTIONARIES_TO_SEARCH = ['Complete Dictionary.docx', 'English III.docx']
+SYSTEM = platform.system()
+if  SYSTEM == 'Windows':
+    PATH_TO_DICTIONARIES = "D:\\Google Drive\\Documents\\Linguistics\\"
+    DICTIONARIES_TO_SEARCH = ['Complete Dictionary.docx', 'English III.docx']
+# elif SYSTEM == 'Linux':
+#     PATH_TO_DICTIONARIES = "/mnt/d/Projects/Python/dictionary_finder/dictionary_finder2.0.py/"
+#     DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
+else:
+    print(f"This script doesn't support the {SYSTEM} operating system.")
+    exit(0)
+
 
 
 def preprocess_documents(documents):
@@ -40,7 +49,8 @@ def print_results(results):
 def get_documents_from_path(PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH):
     documents = []
     for dict in DICTIONARIES_TO_SEARCH:
-        documents.append(zipfile.ZipFile(PATH_TO_DICTIONARIES + dict, 'r'))
+        path = PATH_TO_DICTIONARIES + dict
+        documents.append(zipfile.ZipFile(path, 'r'))
     return documents
 
 
