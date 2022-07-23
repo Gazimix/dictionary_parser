@@ -5,16 +5,15 @@ import re
 
 UNDERLINE = "_______________________________________________________________"
 # PATH_TO_DICTIONARIES = "D:\\Projects\\Python\\dictionary_finder\\"
-# DICTIONARIES_TO_SEARCH = ['Irrigation.docx',
-#                           'Test.docx'] \
+# DICTIONARIES_TO_SEARCH = ['English Dictionary 2.docx'] \
 
 SYSTEM = platform.system()
 if  SYSTEM == 'Windows':
     PATH_TO_DICTIONARIES = "D:\\Google Drive\\Documents\\Linguistics\\"
-    DICTIONARIES_TO_SEARCH = ['Complete Dictionary.docx', 'English III.docx']
-# elif SYSTEM == 'Linux':
-#     PATH_TO_DICTIONARIES = "/mnt/d/Projects/Python/dictionary_finder/dictionary_finder2.0.py/"
-#     DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
+    DICTIONARIES_TO_SEARCH = ['Complete Dictionary.docx'] #+ ['English III.docx']
+elif SYSTEM == 'Linux':
+    PATH_TO_DICTIONARIES = "/mnt/d/Projects/Python/dictionary_finder/dictionary_finder2.0.py/"
+    DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
 else:
     print(f"This script doesn't support the {SYSTEM} operating system.")
     exit(0)
@@ -23,12 +22,21 @@ else:
 
 def preprocess_documents(documents):
     word_list = []
+    par_pattern = r"<w:p .+?>[\s\w\d<>:=\"\/\\\-.\(\)\[\]\!\|\@\#\$\%\^\&\*\-\+]+?<\/w:p>"
+    par_trm = re.compile(par_pattern)
+    word_pattern = r'<w:t\b.*?>([a-zA-Z\d\s=,\.!?\*&\^\\\|\$\%\^\@\#\!\*\(\)\_]+?)<\/w:t>'
+    wrd_trm = re.compile(word_pattern)
     for document in documents:
-        word_pattern = r'<w:t>([a-zA-Z\d\s=,\.!?\*&\^\\\|]*)<\/w:t>'
-        wrd_trm = re.compile(word_pattern)
-        result = document.read('word/document.xml')
-        match = re.findall(wrd_trm, str(result.lower()))
-        word_list.extend(match)
+        result = str(document.read('word/document.xml'))
+        lower_case_text = result.lower()
+        match_1 = re.findall(par_trm, lower_case_text)
+        for m1 in match_1:
+            concatenated = ""
+            match_2 = re.findall(wrd_trm, m1)
+            for i in match_2:
+                concatenated += i
+            if len(concatenated) != 0:
+                word_list.append(concatenated)
     return word_list
 
 
