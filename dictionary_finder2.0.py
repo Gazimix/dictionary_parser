@@ -50,7 +50,8 @@ def get_documents_from_path(PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH):
     documents = []
     for dict in DICTIONARIES_TO_SEARCH:
         path = PATH_TO_DICTIONARIES + dict
-        documents.append(zipfile.ZipFile(path, 'r'))
+        file = zipfile.ZipFile(path, 'r')
+        documents.append(file)
     return documents
 
 
@@ -80,12 +81,15 @@ def loop_over_input(word_list):
         inpt = get_input()
 
         
-
+def close_opened_documents(documents):
+    for doc in documents:
+        doc.close()
 
 if __name__ == "__main__":
     try:
         documents = get_documents_from_path(PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH)
         word_list = preprocess_documents(documents)
+        close_opened_documents(documents)
         loop_over_input(word_list)
     except KeyboardInterrupt:
         print("Exiting")
