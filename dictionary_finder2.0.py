@@ -1,4 +1,3 @@
-import sys
 import platform
 import zipfile
 import re
@@ -8,12 +7,12 @@ UNDERLINE = "_______________________________________________________________"
 # DICTIONARIES_TO_SEARCH = ['English Dictionary 2.docx'] \
 
 SYSTEM = platform.system()
+DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
+
 if  SYSTEM == 'Windows':
     PATH_TO_DICTIONARIES = "D:\\Google Drive\\Documents\\Linguistics\\"
-    DICTIONARIES_TO_SEARCH = ['Complete Dictionary.docx'] #+ ['English III.docx']
 elif SYSTEM == 'Linux':
     PATH_TO_DICTIONARIES = "/mnt/d/Projects/Python/dictionary_finder/dictionary_finder2.0.py/"
-    DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
 else:
     print(f"This script doesn't support the {SYSTEM} operating system.")
     exit(0)
@@ -22,7 +21,7 @@ else:
 
 def preprocess_documents(documents):
     word_list = []
-    par_pattern = r"<w:p .+?>[\s\w\d<>:=\"\/\\\-.\(\)\[\]\!\|\@\#\$\%\^\&\*\-\+]+?<\/w:p>"
+    par_pattern = r"<w:p.+?>[\s\w\d<>:=\"\/\\\-.\(\)\[\]\!\|\@\#\$\%\^\&\*\-\+]+?<\/w:p>"
     par_trm = re.compile(par_pattern)
     word_pattern = r'<w:t\b.*?>([a-zA-Z\d\s=,\.!?\*&\^\\\|\$\%\^\@\#\!\*\(\)\_]+?)<\/w:t>'
     wrd_trm = re.compile(word_pattern)
@@ -49,7 +48,7 @@ def print_results(results):
     if not amount:
         print(f"Couldn't find")
     else:
-        print(f"Found the word in {amount} terms:")
+        print(f"************************ Found the word in {amount} terms ************************")
         for term in results:
             print(term)
 
