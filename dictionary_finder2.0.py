@@ -23,10 +23,10 @@ def preprocess_documents(documents):
     word_list = []
     par_pattern = r"<w:p.+?>[\s\w\d<>:=\"\/\\\-.\(\)\[\]\!\|\@\#\$\%\^\&\*\-\+]+?<\/w:p>"
     par_trm = re.compile(par_pattern)
-    word_pattern = r'<w:t\b.*?>([a-zA-Z\d\s=,\.!?\*&\^\\\|\$\%\^\@\#\!\*\(\)\_]+?)<\/w:t>'
+    word_pattern = r'<w:t\b.*?>([\u0590-\u05fea-zA-Z\d\s=\"\'\\\;,\.!?\*&\^\\\|\$\%\^\@\#\!\*\(\)\_]+?)<\/w:t>'
     wrd_trm = re.compile(word_pattern)
     for document in documents:
-        result = str(document.read('word/document.xml'))
+        result = str(document.read('word/document.xml').decode("utf-8", "strict"))
         lower_case_text = result.lower()
         match_1 = re.findall(par_trm, lower_case_text)
         for m1 in match_1:
@@ -42,6 +42,13 @@ def preprocess_documents(documents):
 def get_input(msg=""):
     return input(msg).lower().strip()
 
+def contains_hebrew_letter(trm):
+    heb_trm = re.compile(r"[\u0590-\u05fe]+")
+    result = re.findall(heb_trm, trm)
+    if len(result):
+        return True
+    return False
+
 
 def print_results(results):
     amount = len(results)
@@ -50,7 +57,10 @@ def print_results(results):
     else:
         print(f"************************ Found the word in {amount} terms ************************")
         for term in results:
-            print(term)
+            if contains_hebrew_letter(term):
+                print(term[::-1])
+            else:
+                print(term)
 
 
 def get_documents_from_path(PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH):
