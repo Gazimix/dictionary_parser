@@ -4,7 +4,7 @@ import re
 
 UNDERLINE = "_______________________________________________________________"
 LOGO_MSG = "****************************************************************************\n\
-                   Welcome to Dictionary Finder 1.0                         \n\
+                   Welcome to Dictionary Finder 2.0                         \n\
 ****************************************************************************"
 WELCOME_MSG = "Enter the phrase you wish to search for in the dictionary. Enter 'q' to exit.\n"
 # PATH_TO_DICTIONARIES = "D:\\Projects\\Python\\dictionary_finder\\"
@@ -66,10 +66,11 @@ def print_results(results):
             resultant_string = ""
             for word in term.split(" "):
                 if contains_hebrew_letter(word):
-                    resultant_string += f"{word[::-1]} "
+                    # resultant_string += f"{word[::-1]} "
+                    resultant_string += f"{word} "
                 else:
                     resultant_string += f"{word} "
-            print(resultant_string)
+            print(resultant_string.strip())
 
 
 def get_documents_from_path(PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH):
