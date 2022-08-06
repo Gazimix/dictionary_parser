@@ -7,16 +7,15 @@ LOGO_MSG = "********************************************************************
                    Welcome to Dictionary Finder 2.0                         \n\
 ****************************************************************************"
 WELCOME_MSG = "Enter the phrase you wish to search for in the dictionary. Enter 'q' to exit.\n"
-# PATH_TO_DICTIONARIES = "D:\\Projects\\Python\\dictionary_finder\\"
-# DICTIONARIES_TO_SEARCH = ['English Dictionary 2.docx'] \
 
 SYSTEM = platform.system()
+
 DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
 
 if SYSTEM == 'Windows':
     PATH_TO_DICTIONARIES = "D:\\Google Drive\\Documents\\Linguistics\\"
 elif SYSTEM == 'Linux':
-    PATH_TO_DICTIONARIES = "/mnt/d/Projects/Python/dictionary_finder/dictionary_finder2.0.py/"
+    PATH_TO_DICTIONARIES = "/mnt/d/Google Drive/Documents/Linguistics/"
 else:
     print(f"This script doesn't support the {SYSTEM} operating system.")
     exit(0)
