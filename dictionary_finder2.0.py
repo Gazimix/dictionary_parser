@@ -1,24 +1,22 @@
 import platform
+from site import abs_paths
 import zipfile
 import re
+import sys
+import argparse
+import os
+
 
 UNDERLINE = "_______________________________________________________________"
 LOGO_MSG = "****************************************************************************\n\
                    Welcome to Dictionary Finder 2.0                         \n\
 ****************************************************************************"
 WELCOME_MSG = "Enter the phrase you wish to search for in the dictionary. Enter 'q' to exit.\n"
-
+DB_FOLDER_NAME = "db"
+DB_FILE_NAME = "db.txt"
 SYSTEM = platform.system()
 
-DICTIONARIES_TO_SEARCH = ["Complete Dictionary.docx", 'English III.docx']
-
-if SYSTEM == 'Windows':
-    PATH_TO_DICTIONARIES = "D:\\Google Drive\\Documents\\Linguistics\\"
-elif SYSTEM == 'Linux':
-    PATH_TO_DICTIONARIES = "/mnt/d/Google Drive/Documents/Linguistics/"
-else:
-    print(f"This script doesn't support the {SYSTEM} operating system.")
-    exit(0)
+dictionaries_set = set()
 
 
 def preprocess_documents(documents):
@@ -72,11 +70,16 @@ def print_results(results):
             print(resultant_string.strip())
 
 
-def get_documents_from_path(PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH):
-    documents = []
-    for dict in DICTIONARIES_TO_SEARCH:
-        path = PATH_TO_DICTIONARIES + dict
-        file = zipfile.ZipFile(path, 'r')
+def read_path_proper_os(path):
+    #TODO: add support for wsl - window path conversion.
+    return path
+
+def get_documents_from_path(dictionaries_set):
+    documents=[]
+    print(f"Processing docx files...")
+    for dict in dictionaries_set:
+        path = os.path.abspath(read_path_proper_os(dict))
+        file=zipfile.ZipFile(path, 'r')
         documents.append(file)
     return documents
 
@@ -112,13 +115,63 @@ def close_opened_documents(documents):
         doc.close()
 
 
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-a', '--add', type=str, required=False,
+                        help="add file to the list of files to parse")
+    return parser.parse_args()
+
+
+def get_db_file_path(folder_name, file_name):
+    output_dir_path = os.path.join(os.getcwd(), folder_name)
+    if not os.path.exists(output_dir_path):
+        os.mkdir(output_dir_path)
+    return os.path.join(output_dir_path, file_name)
+
+def load_docx_file_paths_from_db():
+    dictionaries_set = set()
+    with open(get_db_file_path(DB_FOLDER_NAME, DB_FILE_NAME)) as file:
+        for line in file:
+            file_path = os.path.abspath(line.strip())
+            dictionaries_set.add(file_path)
+    return dictionaries_set
+
+def handle_add_args(args):
+    if args.add:
+        attempt_to_add_file_path_to_db(args)
+    else:
+        print("need to give parameter after usage of -a and --add")
+
+def attempt_to_add_file_path_to_db(args):
+    file_to_keep = args.add if args.add else args.a
+    file_to_keep = os.path.abspath(file_to_keep)
+    if file_to_keep:
+        if os.path.exists(file_to_keep):
+            path_of_write_file = get_db_file_path(DB_FOLDER_NAME, DB_FILE_NAME)
+            if file_to_keep in dictionaries_set:
+                print(f"Error: file: {file_to_keep} already in db")
+            else:
+                with open(path_of_write_file, "a") as db_file:
+                    db_file.write(f"{os.path.abspath(file_to_keep)}\n")
+                print(f"Success, updated DB file {path_of_write_file} with: \'{file_to_keep}\' to files database.")
+        else:
+            print(f"Given file: \'{file_to_keep}\' doesn't exists.")
+
+def handle_args(args):
+    handle_add_args(args) # handle -a --add args
+
+
 if __name__ == "__main__":
     try:
-        documents = get_documents_from_path(
-            PATH_TO_DICTIONARIES, DICTIONARIES_TO_SEARCH)
-        word_list = preprocess_documents(documents)
-        close_opened_documents(documents)
-        loop_over_input(word_list)
+        dictionaries_set = load_docx_file_paths_from_db()
+        if len(sys.argv) > 1: # in case we run the program with parameters, don't loop over input
+            args = parse_arguments()
+            handle_args(args)
+        else:
+            documents = get_documents_from_path(dictionaries_set)
+            word_list=preprocess_documents(documents)
+            close_opened_documents(documents)
+            loop_over_input(word_list)
     except KeyboardInterrupt:
         print("Exiting")
         exit(0)
