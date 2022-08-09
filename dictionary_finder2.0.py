@@ -117,15 +117,16 @@ def parse_arguments():
 
 
 def get_db_file_path(folder_name, file_name):
-    output_dir_path = os.path.join(os.getcwd(), folder_name)
-    if not os.path.exists(output_dir_path):
-        os.mkdir(output_dir_path)
-    return os.path.join(output_dir_path, file_name)
+    if not os.path.exists(folder_name):
+        os.mkdir(folder_name)
+    return os.path.join(folder_name, file_name)
 
 
 def load_docx_file_paths_from_db():
     dictionaries_set = set()
-    with open(get_db_file_path(DB_FOLDER_NAME, DB_FILE_NAME)) as file:
+    cur_script_env = os.path.abspath(os.path.dirname(__file__))
+    folder_path = os.path.join(cur_script_env, DB_FOLDER_NAME)
+    with open(get_db_file_path(folder_path, DB_FILE_NAME)) as file:
         for line in file:
             file_path = line.strip()
             dictionaries_set.add(file_path)
@@ -156,7 +157,8 @@ def attempt_to_add_file_path_to_db(args):
                 print(f"Error: file: {file_to_keep} already in db")
             else:
                 with open(path_of_write_file, "a") as db_file:
-                    db_file.write(f"{linux_path_from_win_path(file_to_keep)}\n")
+                    db_file.write(
+                        f"{linux_path_from_win_path(file_to_keep)}\n")
                 print(
                     f"Success, updated DB file {path_of_write_file} with: \'{file_to_keep}\' to files database.")
         else:
