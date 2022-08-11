@@ -1,6 +1,6 @@
 import re
 
-def win_path_from_linux_path(lin_path):
+def win_path_from_wsl_path(lin_path):
     i = 0
     path_pieces = str(lin_path).split('/')
     regex = r"\/mnt\/[a-z]\/.*"
@@ -23,7 +23,7 @@ def win_path_from_linux_path(lin_path):
         # print(lin_path)
         return lin_path
 
-def linux_path_from_win_path(win_path):
+def wsl_path_from_win_path(win_path):
     i = 0
     path_pieces = str(win_path).split('\\')
     regex = r"[A-Z]:\\.*"
@@ -48,11 +48,11 @@ def print_ln():
     print("__________________________________________")
 
 print_ln()
-win_path_from_linux_path("/mnt/d/Google Drive/Documents/Linguistics/English III.docx")
+win_path_from_wsl_path("/mnt/d/Google Drive/Documents/Linguistics/English III.docx")
 print_ln()
-win_path_from_linux_path("D:\\Google Drive\\Documents\\Linguistics\\English III.docx")
+win_path_from_wsl_path("D:\\Google Drive\\Documents\\Linguistics\\English III.docx")
 print_ln()
-linux_path_from_win_path("/mnt/d/Google Drive/Documents/Linguistics/English III.docx")
+wsl_path_from_win_path("/mnt/d/Google Drive/Documents/Linguistics/English III.docx")
 print_ln()
-linux_path_from_win_path("D:\\Google Drive\\Documents\\Linguistics\\English III.docx")
+wsl_path_from_win_path("D:\\Google Drive\\Documents\\Linguistics\\English III.docx")
 print_ln()

@@ -6,7 +6,7 @@ SYSTEM = platform.system()
 def win_path_from_linux_path(lin_path):
     i = 0
     path_pieces = str(lin_path).split('/')
-    is_param_linux_path = is_linux_path(lin_path)
+    is_param_linux_path = is_wsl_path(lin_path)
     if is_param_linux_path:
         win_pth = ""
         for piece in path_pieces:
@@ -25,13 +25,13 @@ def win_path_from_linux_path(lin_path):
         # print(lin_path)
         return lin_path
 
-def is_linux_path(lin_path):
+def is_wsl_path(lin_path):
     regex = r"\/mnt\/[a-z]\/.*"
     cmp = re.compile(regex)
     is_param_linux_path = re.match(cmp, lin_path)
     return is_param_linux_path
 
-def linux_path_from_win_path(win_path):
+def wsl_path_from_win_path(win_path):
     i = 0
     path_pieces = str(win_path).split('\\')
     is_param_win_path = is_win_path(win_path)

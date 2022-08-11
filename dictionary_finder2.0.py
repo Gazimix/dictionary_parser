@@ -143,10 +143,10 @@ def handle_add_args(args):
 def attempt_to_add_file_path_to_db(args):
     file_to_keep = args.add if args.add else args.a
     file_to_keep = os.path.abspath(file_to_keep)
-    if is_linux_path(file_to_keep):
+    if is_wsl_path(file_to_keep):
         pass
     elif is_win_path(file_to_keep):
-        linux_path_from_win_path(file_to_keep)
+        wsl_path_from_win_path(file_to_keep)
     else:
         print("Bad path input")
         exit(1)
@@ -158,7 +158,7 @@ def attempt_to_add_file_path_to_db(args):
             else:
                 with open(path_of_write_file, "a") as db_file:
                     db_file.write(
-                        f"{linux_path_from_win_path(file_to_keep)}\n")
+                        f"{wsl_path_from_win_path(file_to_keep)}\n")
                 print(
                     f"Success, updated DB file {path_of_write_file} with: \'{file_to_keep}\' to files database.")
         else:
