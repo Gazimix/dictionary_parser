@@ -1,1 +1,4 @@
 *.docx
+db/
+1
+__pycache__/
